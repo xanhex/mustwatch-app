@@ -1,0 +1,454 @@
+#:kivy 2.1.0
+#:import hex kivy.utils.get_color_from_hex
+#:import Clock kivy.clock.Clock
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+<UI>:
+    orientation: 'vertical'
+
+    main_color: '1a1a1a'
+    sec_color: '212121'
+    third_color: '303030'
+    accent_color: 'e3e3e3'
+    complement_color: '919191'
+
+    topbar_hint_y: .05
+
+    poster_hinty: 0.5
+    title_hinty: 0.05
+    meta_1_hinty: 0.05
+    desc_hinty: 0.12
+    meta_2_hinty: 0.11
+    watched_hinty: 0.07
+    buttons_hinty: 0.1
+
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    TopBar:
+        bg_color: hex(root.sec_color)
+        size_hint_y: root.topbar_hint_y
+
+        Button:
+            text: 'MustWatch'
+            size_hint_x: .27
+            color: '99a8cc'
+            background_normal: ''
+            background_down: ''
+            background_color: 0, 0, 0, 0
+            on_release: import webbrowser; webbrowser.open('https://xanhex.pythonanywhere.com')
+
+        Widget:
+            text: 'MustWatch'
+            size_hint_x: .5
+
+        Button:
+            id: dd_btn
+            text: 'Options'
+            background_normal: ''
+            background_down: ''
+            background_color: 0, 0, 0, 0
+            color: root.complement_color
+            on_press: dropdown.open(self); self.color=root.accent_color
+            on_parent: dropdown.dismiss()
+            size_hint_x: .23
+
+        DropDown:
+            id: dropdown
+            on_dismiss:
+                dd_btn.color=root.complement_color
+                item_btn.color=root.complement_color
+                refresh_btn.color=root.complement_color
+                lang.color=root.complement_color
+            width: '180dp'
+            auto_width: False
+
+            Button:
+                id: item_btn
+                text: 'Download database'
+                background_normal: ''
+                background_down: ''
+                background_color: hex(root.sec_color)
+                color: 1, 1, 1, .7
+                size_hint_y: None
+                height: '44dp'
+                on_press: self.color=root.accent_color
+                on_release: dropdown.dismiss(); Clock.schedule_once(lambda dt: app.schedule_download(), .1);
+
+            Button:
+                id: refresh_btn
+                text: 'Reset database'
+                background_normal: ''
+                background_down: ''
+                background_color: hex(root.sec_color)
+                color: 1, 1, 1, .7
+                size_hint_y: None
+                height: '44dp'
+                on_press: self.color=root.accent_color
+                on_release: app.reset_data(); dropdown.dismiss();
+
+            Button:
+                id: lang
+                text: 'RU/ENG'
+                background_normal: ''
+                background_down: ''
+                background_color: hex(root.sec_color)
+                color: 1, 1, 1, .7
+                size_hint_y: None
+                height: '44dp'
+                on_press: self.color=root.accent_color
+                on_release: app.switch_language(); Clock.schedule_once(lambda dt: dropdown.dismiss(), .5);
+
+    SM:
+        id: sm
+        transition: NoTransition()
+
+        AllMovies:
+            id: all
+            name: 'all'
+            bg_color: hex(root.main_color)
+
+            BoxLayout:
+                orientation: 'vertical'
+                padding: sp(15), sp(15)
+                spacing: sp(10)
+
+                Image:
+                    id: poster
+                    size_hint_y: root.poster_hinty
+                    border: 50, 50, 50, 50
+
+                Label:
+                    id: title
+                    size_hint_y: root.title_hinty
+                    valign: 'center'
+                    halign: 'center'
+                    text_size: self.size
+                    font_size: sp(16)
+                    font_name: "Roboto"
+                    color: 'white'
+                    text: 'Really Very Long Movie Title Of The Longest'
+
+                MetaOneRow:
+                    size_hint_y: root.meta_1_hinty
+
+                    Label:
+                        id: type
+                        valign: 'center'
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        font_name: "Roboto"
+                        text: 'type'
+                        color: root.complement_color
+
+                    Label:
+                        id: year
+                        valign: 'center'
+                        halign: 'center'
+                        text_size: self.size
+                        font_size: sp(12)
+                        font_name: "Roboto"
+                        color: root.complement_color
+                        text: 'year'
+
+                    Label:
+                        id: genre
+                        valign: 'center'
+                        halign: 'right'
+                        text_size: self.size
+                        font_size: sp(12)
+                        font_name: "Roboto"
+                        color: root.complement_color
+                        text: 'genre'
+
+                Label:
+                    id: description
+                    size_hint_y: root.desc_hinty
+                    valign: 'top'
+                    halign: 'left'
+                    text_size: self.size
+                    font_size: sp(14)
+                    font_name: "Roboto"
+                    color: 'white'
+                    text: 'Description'
+
+                MetaTwoGrid:
+                    size_hint_y: root.meta_2_hinty
+                    spacing: sp(3), sp(0)
+                    cols: 3
+                    minor_width: 0.3
+
+                    Label:
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.complement_color
+                        text: 'Starring'
+
+                    Label:
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.complement_color
+                        text: 'Directed by'
+
+                    LabelCanvas:
+                        # bg_color: 1,0,0,1
+                        size_hint_x: self.parent.minor_width
+                        halign: 'right'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.complement_color
+                        text: 'Ratings'
+
+                    Label:
+                        id: star_1
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.accent_color
+                        text: 'Star 1'
+
+                    Label:
+                        id: director_1
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.accent_color
+                        text: 'Director 1'
+
+                    Label:
+                        id: kp
+                        size_hint_x: self.parent.minor_width
+                        halign: 'right'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.accent_color
+                        text: 'KP'
+
+                    Label:
+                        id: star_2
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.accent_color
+                        text: 'Star 2'
+
+                    Label:
+                        id: director_2
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.accent_color
+                        text: 'Director 2'
+
+                    Label:
+                        id: imdb
+                        size_hint_x: self.parent.minor_width
+                        halign: 'right'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.accent_color
+                        text: 'IMDB'
+
+                    Label:
+                        id: star_3
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(12)
+                        color: root.accent_color
+                        text: 'Star 3'
+
+
+                WatchedCheckboxRow:
+                    size_hint_y: root.watched_hinty
+                    side_spacer: .35
+
+                    Spacer:
+                        size_hint_x: self.parent.side_spacer
+
+                    CheckBox:
+                        id: watched
+                        color: 'white'
+                        valign: 'center'
+                        halign: 'center'
+                        background_down: ''
+                        background_normal: ''
+                        on_press: Clock.schedule_once(lambda dt: app.switch_movie(), .1)
+                        size_hint_x: .1
+
+                    LabelCanvas:
+                        text: 'Watched'
+                        valign: 'center'
+                        halign: 'left'
+                        text_size: self.size
+                        font_size: sp(14)
+                        bold: True
+                        color: 'white'
+                        size_hint_x: .2
+
+                    Spacer:
+                        size_hint_x: self.parent.side_spacer
+
+
+                ButtonsRow:
+                    size_hint_y: root.buttons_hinty
+
+                    PreviousBtn:
+                        id: prev
+                        size_hint_x: 0.4
+                        text: "Previous"
+                        on_press: app.get_movie('prev')
+
+                    Widget:
+                        size_hint_x: 0.1
+
+                    NextBtn:
+                        id: next
+                        size_hint_x: 0.4
+                        text: "Next"
+                        on_press: app.get_movie('next')
+
+        AllWatched:
+            id: all_watched
+            bg_color: hex(root.third_color)
+
+
+<BackgroundColor@Widget>:
+    bg_color: 1, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: root.bg_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<AllWatched@Screen+BackgroundColor>:
+    name: 'all_watched'
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            id: no_movies
+            valign: 'center'
+            halign: 'center'
+            text_size: self.size
+            font_size: sp(20)
+            text: 'All movies watched'
+            color: 'white'
+
+<InfoPopup>:
+    main_color: '1a1a1a'
+    sec_color: '212121'
+    third_color: '303030'
+    accent_color: 'e3e3e3'
+    complement_color: '919191'
+
+    title: 'System Info'
+    title_align: 'center'
+    title_color: root.accent_color
+    title_size: sp(18)
+    auto_dismiss: False
+    size_hint: (.7, .2)
+    separator_color: root.third_color
+    background: ''
+    background_color: root.sec_color
+    overlay_color: 0, 0, 0, .5
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: sp(10), sp(10)
+        spacing: sp(10)
+
+        Label:
+            id: message
+            text: 'System message'
+            color: root.accent_color
+
+        Button:
+            text: 'OK'
+            on_release: root.dismiss()
+            bold: True
+            font_size: sp(18)
+            text_size: self.size
+            valign: 'center'
+            halign: 'center'
+            background_color: root.third_color
+            background_normal: ''
+            background_down: ''
+
+<ProcessPopup>:
+    main_color: '1a1a1a'
+    sec_color: '212121'
+    third_color: '303030'
+    accent_color: 'e3e3e3'
+    complement_color: '919191'
+    overlay_color: 0, 0, 0, 0
+
+    title: 'Task in progress'
+    title_align: 'center'
+    title_color: root.accent_color
+    title_size: sp(18)
+    auto_dismiss: False
+    size_hint: (.7, .2)
+    separator_color: root.third_color
+    background: ''
+    background_color: root.sec_color
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: sp(10), sp(10)
+        spacing: sp(10)
+
+        Label:
+            id: message
+            text: 'Doing something...'
+            color: root.accent_color
+
+<RoundedButton@Button>:
+    main_color: '1a1a1a'
+    sec_color: '212121'
+    third_color: '303030'
+    accent_color: 'e3e3e3'
+    complement_color: '919191'
+
+    bold: True
+    font_size: sp(18)
+    text_size: self.size
+    color: self.accent_color
+    valign: 'center'
+    halign: 'center'
+    padding: sp(10), 0
+    background_color: (1, 1, 1, 0)
+    background_normal: ''
+    background_down: ''
+
+    canvas.before:
+        Color:
+            rgba: hex(root.sec_color) if root.state == 'normal' else hex(root.complement_color)
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [dp(30)]
+
+
+<Spacer@BackgroundColor>
+<TopBar@BoxLayout+BackgroundColor>
+<AllMovies@Screen+BackgroundColor>
+<MetaOneRow@BoxLayout+BackgroundColor>
+<MetaTwoGrid@GridLayout+BackgroundColor>
+<ButtonsRow@BoxLayout+BackgroundColor>
+<WatchedCheckboxRow@BoxLayout+BackgroundColor>
+<NextBtn@RoundedButton>
+<PreviousBtn@RoundedButton>
+<BoxLayoutCanvas@BoxLayout+BackgroundColor>
+<GridLayoutCanvas@GridLayout+BackgroundColor>
+<AnchorLayoutCanvas@AnchorLayout+BackgroundColor>
+<FloatLayoutCanvas@FloatLayout+BackgroundColor>
+<ImageCanvas@Image+BackgroundColor>
+<LabelCanvas@Label+BackgroundColor>

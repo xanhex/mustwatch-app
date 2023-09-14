@@ -1,0 +1,20 @@
+[tool.black]
+include = '\.pyi?$'
+extend-exclude = '''
+(
+    .venv
+    | builds
+    | __
+    | /\.
+)
+'''
+line_length = 79
+skip-string-normalization = true
+
+[tool.isort]
+profile = 'black'
+src_paths = ['.']
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = ['builds']

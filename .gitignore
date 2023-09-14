@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv
+.env
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Additional
+.vscode
+features.txt
+requirements_dev.txt
+data/movies.json
+data/posters/*
+Makefile
+test.http
